@@ -62,7 +62,7 @@ def fitffpcls(cls):
 
     return allfitcls
 
-def read_and_diff_files(f1,f2,nside=None,tmask=tmask,corr1=None,corr2=None,return_map=False):
+def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False):
     colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
        
     m1={}
@@ -78,6 +78,8 @@ def read_and_diff_files(f1,f2,nside=None,tmask=tmask,corr1=None,corr2=None,retur
     # Generate differences
     mdiff={}
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
+        if tmask is None:
+            tmask= m1[key].mask | m2[key].mask
         tmask=tmask | m1[key].mask | m2[key].mask
         
     if nside:
