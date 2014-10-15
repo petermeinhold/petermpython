@@ -51,7 +51,7 @@ def fitffpcls(cls):
             st=np.std(cls[:,p,lbin])
             mn=np.mean(cls[:,p,lbin])
             pstart=[len(cls[:,p,lbin])/10.,mn,st,st]
-            test=pu.fit_asymmetric_gaussian(h[1][1:],h[0],pstart=pstart)
+            test=fit_asymmetric_gaussian(h[1][1:],h[0],pstart=pstart)
             meancls[lbin]=test['center']
             lowsigcls[lbin]=test['sigmalow']
             hisigcls[lbin]=test['sigmahigh']
