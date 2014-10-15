@@ -44,11 +44,11 @@ for q1,q2,s1,s2,hr1,hr2 in zip(q1list,q2list,s1list,s2list,hr1list,hr2list):
             f1=mcdir+'/ffp8_noise_%s%s_%s_map_mc_%s%s.fits' %(freq,q1,s1,mcnum,hr1)
             f2=mcdir+'/ffp8_noise_%s%s_%s_map_mc_%s%s.fits' %(freq,q2,s2,mcnum,hr2)
             cls.append(pu.read_and_diff_files(f1,f2,nside=256,tmask=tmask))
-    pklfilename=homedir+'ffp8_noise_cls/maps/'+'ffp8_noise_null_cls_'+freq+q1+s1+hr1+q2+s2+hr2+'.pkl'
+    pklfilename=homedir+'ffp8_noise_cls/'+'ffp8_noise_null_cls_'+freq+q1+s1+hr1+q2+s2+hr2+'.pkl'
     pklfile=open(pklfilename,'wb')
     cPickle.dump(cls,pklfile)
     pklfile.close()
-    ffpcl_means=fitffpcls(cls)
+    ffpcl_means=pu.fitffpcls(cls)
     outfilename=pklfilename.replace('ffp8_noise_null_cls_','cl_fit_ffp8_noise_null_cls_')
     pklfile=open(outfilename,'wb')
     cPickle.dump(ffpcl_means,pklfile)
