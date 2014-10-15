@@ -31,7 +31,7 @@ hr2list=['','','','','','','','','','','','']
 q1list=['_18_23','_19_22','_20_21','_18_23','_18_23','_19_22','_18_23','_18_23','_19_22','_18_23','_18_23','_19_22']
 q2list=['_18_23','_19_22','_20_21','_19_22','_20_21','_20_21','_19_22','_20_21','_20_21','_19_22','_20_21','_20_21']
 freq='070'
-mcdirlist=sort(glob(topdir+freq+'/'+freq+'_0*'))
+mcdirlist=np.sort(glob(topdir+freq+'/'+freq+'_0*'))
 homedir='/global/homes/p/peterm/'
 for q1,q2,s1,s2,hr1,hr2 in zip(q1list,q2list,s1list,s2list,hr1list,hr2list):
     cls=[]
