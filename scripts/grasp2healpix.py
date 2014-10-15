@@ -1,0 +1,114 @@
+;pro grasp2healpix
+
+;-----------------------------------------------------------------------------
+; grasp2healpix
+; this program reads a file in grasp8 "cut" format and plot the data in healpix
+; written by F.Villa
+; IASF sezione di Bologna
+; 19 June 2002
+; ----------------------------------------------------------------------------
+
+SET_PLOT,'win'
+
+DEVICE, RETAIN=2,DECOMPOSED=0
+
+HEADER='header'
+FILEINPUT='fileinput'
+THETAI=0.D
+DTHETA=0.D
+NTHETA=1L
+PHI=0.D
+K1=1
+K2=1
+K3=1
+COMP1R=0.D
+COMP1I=0.D
+COMP2R=0.D
+COMP2I=0.D
+
+;********************************
+
+FILEINPUT=DIALOG_PICKFILE(filter = '*.cut')
+
+FILEOUTPUT_C1_PS = STRMID(FILEINPUT, 0,STRPOS(FILEINPUT,'.cut')) + '_C1_mollview.ps'
+FILEOUTPUT_C1_TOP_PS = STRMID(FILEINPUT, 0,STRPOS(FILEINPUT,'.cut')) + '_C1_top_mollview.ps'
+
+FILEOUTPUT_C2_PS = STRMID(FILEINPUT, 0,STRPOS(FILEINPUT,'.cut')) + '_C2_mollview.ps'
+FILEOUTPUT_C2_TOP_PS = STRMID(FILEINPUT, 0,STRPOS(FILEINPUT,'.cut')) + '_C2_top_mollview.ps'
+
+FILENAMEIN = STRMID(FILEINPUT,RSTRPOS(FILEINPUT,'\')+1)
+
+OPENR,1,FILEINPUT
+
+NSIDE=32L
+NPIX = 12L*NSIDE^2
+MAP_C1 = DBLARR(NPIX)
+HITS_C1 = DBLARR(NPIX)
+MAP_C2 = DBLARR(NPIX)
+HITS_C2 = DBLARR(NPIX)
+MAP_P = DBLARR(NPIX)
+HITS_P = DBLARR(NPIX)
+
+WHILE NOT EOF(1) DO BEGIN
+
+	READF,1,HEADER,THETAI,DTHETA,NTHETA,PHI,K1,K2,K3
+	THETAF = THETAI + DOUBLE(NTHETA-1)*DTHETA
+
+  FOR I=1,NTHETA DO BEGIN
+
+    THETA = THETAI + (DOUBLE(I)-1.)/DOUBLE(NTHETA-1)*(THETAF-THETAI)
+	 	READF,1,COMP1R,COMP1I,COMP2R,COMP2I
+
+    IF 	(THETA LT 0.D) THEN BEGIN
+    	THETA_NEW = - THETA
+    	PHI_NEW = PHI + 180.D
+	    ENDIF ELSE BEGIN
+ 		  THETA_NEW = THETA
+          PHI_NEW = PHI
+      ENDELSE
+
+	 COMP1 = DCOMPLEX(COMP1R,COMP1I)
+	 COMP2 = DCOMPLEX(COMP2R,COMP2I)
+
+     POWER1 = ABS(COMP1)^2
+     POWER2 = ABS(COMP2)^2
+
+	 ang2pix_nest,NSIDE,THETA_NEW*!PI/180.D,PHI_NEW*!PI/180.D,IPIX
+
+	 MAP_C1(IPIX)=MAP_C1(IPIX)+ POWER1
+ 	 HITS_C1(IPIX)=HITS_C1(IPIX)+1
+ 	 MAP_C2(IPIX)=MAP_C2(IPIX)+ POWER2
+ 	 HITS_C2(IPIX)=HITS_C2(IPIX)+1
+
+ ENDFOR
+
+ENDWHILE
+
+CLOSE,/ALL
+
+MAP_C1 = MAP_C1/HITS_C1
+MAP_C2 = MAP_C2/HITS_C2
+
+MAPDB_C1 = 10.*ALOG10(MAP_C1)
+MAPDB_C2 = 10.*ALOG10(MAP_C2)
+
+; PLOTTING IN MOLLVIEW
+
+mollview,MAPDB_C1,/online,/nested,colt=coltable,min=-60.,max=MAX(MAPDB_C1,/NAN),ROT=[0.,0.],/GRATICULE,$
+TITLEPLOT=FILENAMEIN, SUBTITLE=' ',PS=FILEOUTPUT_C1_PS,UNITS='dBi'
+
+mollview,MAPDB_C1,/online,/nested,colt=coltable,min=-60.,max=MAX(MAPDB_C1,/NAN),ROT=[0.,90.],/GRATICULE,$
+TITLEPLOT=FILENAMEIN, SUBTITLE=' ',PS=FILEOUTPUT_C1_TOP_PS,UNITS='dBi'
+
+mollview,MAPDB_C2,/online,/nested,colt=coltable,min=-60.,max=MAX(MAPDB_C2,/NAN),ROT=[0.,0.],/GRATICULE,$
+TITLEPLOT=FILENAMEIN, SUBTITLE=' ',PS=FILEOUTPUT_C2_PS,UNITS='dBi'
+
+mollview,MAPDB_C2,/online,/nested,colt=coltable,min=-60.,max=MAX(MAPDB_C2,/NAN),ROT=[0.,90.],/GRATICULE,$
+TITLEPLOT=FILENAMEIN, SUBTITLE=' ',PS=FILEOUTPUT_C2_TOP_PS,UNITS='dBi'
+
+POWER=MAP_C1^2+MAP_C2^2
+
+mollview,10*alog10(MAP_C1^2+MAP_C2^2),/online,/nested,colt=coltable,min=-60.,max=60,ROT=[0.,0.],/GRATICULE,$
+TITLEPLOT=FILENAMEIN, SUBTITLE=' ',PS='power_60.ps',UNITS='dBi'
+
+END
