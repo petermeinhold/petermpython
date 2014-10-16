@@ -36,6 +36,25 @@ def get_lfi_dx11_mask(nside):
     tmask=degrade_mask(tmask,nside_out=nside)
     return tmask
     
+def get_ffp8_cls(freq,s1,s2,hr1,hr2):
+    #find and read the pickled CL list from FFP8 noise sims
+    topdir='/global/homes/p/peterm/ffp8_noise_cls/'
+    pklfilename=topdir+'ffp8_noise_null_cls_'+freq+s1+hr1+s2+hr2+'.pkl'
+    pklfile=open(pklfilename,'rb')
+    cls=cPickle.load(pklfile)
+    pklfile.close()
+    return cls
+    
+def get_ffp8_mean_fit_cls(freq,q1,q2,s1,s2,hr1,hr2,det=''):
+    #find and read the pickled CL list from FFP8 noise sims
+    
+    topdir='/global/homes/p/peterm/ffp8_noise_cls/'
+    pklfilename=topdir+'cl_fit_ffp8_noise_null_cls_'+freq+det+q1+s1+hr1+q2+s2+hr2+'.pkl'
+    pklfile=open(pklfilename,'rb')
+    cls=cPickle.load(pklfile)
+    pklfile.close()
+    return cls
+    
 def fitffpcls(cls):
     #function takes list of TT,EE,BB cls from ffp sim nulls, histograms and fits asymmetric gaussian errors
     cls=np.array(cls)
