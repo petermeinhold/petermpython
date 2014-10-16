@@ -32,7 +32,7 @@ if os.sys.platform=='win32':
 import os
 import matplotlib.pyplot as plt
  
-def save(path, ext='png', close=True, verbose=False):
+def savef(path, ext='png', close=True, verbose=False):
     """Save a figure from pyplot. (from http://www.jesshamrick.com/2012/09/03/saving-figures-from-pyplot/)
     Parameters
     ----------
