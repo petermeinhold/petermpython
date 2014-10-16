@@ -33,7 +33,8 @@ import os
 import matplotlib.pyplot as plt
  
 def savef(path, ext='png', close=True, verbose=False):
-    """Save a figure from pyplot. (from http://www.jesshamrick.com/2012/09/03/saving-figures-from-pyplot/)
+    """
+    Save a figure from pyplot. (from http://www.jesshamrick.com/2012/09/03/saving-figures-from-pyplot/)
     Parameters
     ----------
     path : string
@@ -56,21 +57,21 @@ def savef(path, ext='png', close=True, verbose=False):
     directory = os.path.split(path)[0]
     filename = "%s.%s" % (os.path.split(path)[1], ext)
     if directory == '':
-    directory = '.'
+        directory = '.'
     # If the directory does not exist, create it
     if not os.path.exists(directory):
-    os.makedirs(directory)
+        os.makedirs(directory)
     # The final path to save to
     savepath = os.path.join(directory, filename)
     if verbose:
-    print("Saving figure to '%s'..." % savepath),
+        print("Saving figure to '%s'..." % savepath),
     # Actually save the figure
     plt.savefig(savepath)
     # Close it
     if close:
-    plt.close()
+        plt.close()
     if verbose:
-    print("Done")
+        print("Done")
     
 def get_lfi_dx11_mask(nside):
     maskfile=open('/global/homes/p/peterm/masks/dx11_lfi_total_mask_2048.pkl','rb')
