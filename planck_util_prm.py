@@ -31,7 +31,157 @@ if os.sys.platform=='win32':
     
 import os
 import matplotlib.pyplot as plt
- 
+
+def make_gridmap(inputmap):
+    '''
+    Function to use correct ct and produce gridmap for paper quality plotting
+    '''
+    nside = hp.npix2nside(len(inputmap))
+    inputmap=hp.ma(inputmap)
+    # ratio is always 1/2
+    xsize = 2000
+    ysize = xsize/2.
+    
+    theta = np.linspace(np.pi, 0, ysize)
+    phi   = np.linspace(-np.pi, np.pi, xsize)
+    longitude = np.radians(np.linspace(-180, 180, xsize))
+    latitude = np.radians(np.linspace(-90, 90, ysize))
+    # project the map to a rectangular matrix xsize x ysize
+    PHI, THETA = np.meshgrid(phi, theta)
+    grid_pix = hp.ang2pix(nside, THETA, PHI)
+
+    # mask
+    #if not(inputmap.mask):
+    grid_map = inputmap[grid_pix]
+    #else:
+    #    grid_mask = inputmap.mask[grid_pix]
+    #    grid_map = np.ma.MaskedArray(inputmap[grid_pix], grid_mask)
+      
+    colormaptag = "colombi1_"
+    outmap={}
+    outmap['cmap'] = colombi1_cmap
+    outmap['longitude']=longitude
+    outmap['latitude']=latitude
+    outmap['data']=grid_map
+    return outmap
+
+def save_plot(gridmap,width=8.8,filename='null',grat=True,vmin=-10,vmax=10):
+    '''
+    function to make and save the paper quality plot, choose width from 18.,12.,8.8
+    filename is in PlanckFig_map_<filename>_width.pdf
+    '''
+    unit = r"$\mathrm{\mu K}$"
+    from matplotlib.projections.geo import GeoAxes
+    class ThetaFormatterShiftPi(GeoAxes.ThetaFormatter):
+        """Shifts labelling by pi
+
+        Shifts labelling from -180,180 to 0-360"""
+        def __call__(self, x, pos=None):
+            if x != 0:
+                x *= -1
+            if x < 0:
+                x += 2*np.pi
+            return GeoAxes.ThetaFormatter.__call__(self, x, pos)
+    
+    fig = plt.figure(figsize=(cm2inch(width), cm2inch(width)))
+    # matplotlib is doing the mollveide projection
+    ax = fig.add_subplot(111,projection='mollweide')
+
+    # rasterized makes the map bitmap while the labels remain vectorial
+    # flip longitude to the astro convention
+    image = plt.pcolormesh(gridmap['longitude'][::-1], gridmap['latitude'], gridmap['data'], vmin=vmin, vmax=vmax, rasterized=True, cmap=gridmap['cmap'])
+
+    # graticule
+    if grat:
+        ax.set_longitude_grid(60)
+        ax.xaxis.set_major_formatter(ThetaFormatterShiftPi(60))
+        if width < 10:
+            ax.set_latitude_grid(45)
+            ax.set_longitude_grid_ends(90)
+        ax.tick_params(axis='x', labelsize=10)
+        ax.tick_params(axis='y', labelsize=10)
+        # remove tick labels
+        ax.xaxis.set_ticklabels([])
+        ax.yaxis.set_ticklabels([])
+        # remove grid
+        ax.xaxis.set_ticks([])
+        ax.yaxis.set_ticks([])
+
+        plt.grid(True)
+    # colorbar
+    cb = fig.colorbar(image, orientation='horizontal', shrink=.4, pad=0.05, ticks=[vmin, vmax])
+    cb.ax.xaxis.set_label_text(unit)
+    cb.ax.xaxis.labelpad = -1
+    # workaround for issue with viewers, see colorbar docstring
+    cb.solids.set_edgecolor("face")
+
+    # remove white space around the image
+    # horizontally, vertically the space is removed directly by savefig bbox_inches="tight"
+    plt.subplots_adjust(left=0.01, right=0.99)
+    plt.savefig("PlanckFig_map_" + filename + "_%dmm.pdf" % int(width*10), bbox_inches='tight', pad_inches=0.02)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
 def savef(path, ext='png', close=True, verbose=False):
     """
     Save a figure from pyplot. (from http://www.jesshamrick.com/2012/09/03/saving-figures-from-pyplot/)
