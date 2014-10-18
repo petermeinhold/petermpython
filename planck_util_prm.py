@@ -15,6 +15,11 @@ import string
 from scipy.io import readsav
 import cPickle
 import warnings
+sys.path.append('/global/homes/p/peterm/petermpython/paperplots/python/scripts')
+sys.path.append('/global/homes/p/peterm/petermpython')
+from setup_matplotlib import *
+from planckcolors import colombi1_cmap 
+
 warnings.filterwarnings('ignore')
 #comment out for local use of planck_util
 
@@ -25,11 +30,6 @@ if os.sys.platform != 'win32':
     import quickring as qr
     import pysqlite2.dbapi2 as sqlite3
     from planck.LFI import LFI
-    import sys
-    sys.path.append('/global/homes/p/peterm/petermpython/paperplots/python/scripts')
-    sys.path.append('/global/homes/p/peterm/petermpython')
-    from setup_matplotlib import *
-    from planckcolors import colombi1_cmap 
     #import scikits.statsmodels.api as sm
 if os.sys.platform=='win32':
     import sqlite3
