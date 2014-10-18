@@ -65,7 +65,7 @@ def make_gridmap(inputmap):
     outmap['data']=grid_map
     return outmap
 
-def save_plot(gridmap,width=8.8,filename='null',grat=True,vmin=-10,vmax=10):
+def save_plot(gridmap,width=8.8,filename='null',figdir='null',grat=True,vmin=-10,vmax=10):
     '''
     function to make and save the paper quality plot, choose width from 18.,12.,8.8
     filename is in PlanckFig_map_<filename>_width.pdf
@@ -120,68 +120,6 @@ def save_plot(gridmap,width=8.8,filename='null',grat=True,vmin=-10,vmax=10):
     plt.subplots_adjust(left=0.01, right=0.99)
     plt.savefig("PlanckFig_map_" + filename + "_%dmm.pdf" % int(width*10), bbox_inches='tight', pad_inches=0.02)
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 def savef(path, ext='png', close=True, verbose=False):
     """
     Save a figure from pyplot. (from http://www.jesshamrick.com/2012/09/03/saving-figures-from-pyplot/)
