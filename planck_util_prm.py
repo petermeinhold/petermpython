@@ -27,6 +27,7 @@ if os.sys.platform != 'win32':
     from planck.LFI import LFI
     import sys
     sys.path.append('/global/homes/p/peterm/petermpython/paperplots/python/scripts')
+    sys.path.append('/global/homes/p/peterm/petermpython')
     from setup_matplotlib import *
     from planckcolors import colombi1_cmap 
     #import scikits.statsmodels.api as sm
