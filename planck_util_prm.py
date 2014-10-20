@@ -123,7 +123,7 @@ def save_plot(gridmap,width=8.8,filename='null',figdir='null',grat=True,vmin=-10
     # remove white space around the image
     # horizontally, vertically the space is removed directly by savefig bbox_inches="tight"
     plt.subplots_adjust(left=0.01, right=0.99)
-    plt.savefig("PlanckFig_map_" + filename + "_%dmm.pdf" % int(width*10), bbox_inches='tight', pad_inches=0.02)
+    plt.savefig(figdir+"PlanckFig_map_" + filename + "_%dmm.pdf" % int(width*10), bbox_inches='tight', pad_inches=0.02)
     
 def savef(path, ext='png', close=True, verbose=False):
     """
