@@ -15,6 +15,7 @@ import string
 from scipy.io import readsav
 import cPickle
 import warnings
+import sys
 sys.path.append('/global/homes/p/peterm/petermpython/paperplots/python/scripts')
 sys.path.append('/global/homes/p/peterm/petermpython')
 from setup_matplotlib import *
@@ -25,7 +26,6 @@ warnings.filterwarnings('ignore')
 
 #import h5py but only if not windows
 if os.sys.platform != 'win32':
-    import sys
     import healpy as hp
     import quickring as qr
     import pysqlite2.dbapi2 as sqlite3
