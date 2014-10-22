@@ -264,11 +264,14 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
     cldata_out=[]
     for cl in cldata:
         cldata_out.append(cl/skyfrac)
+    cldatad={}
+    for i,spec in enumerate(['TT','EE','BB','TE','TB','EB']):
+        cldatad[spec]=cldata_out[i]
     print 'skyfrac ',skyfrac
     if return_map is False:
-        return cldata_out
+        return cldatad
     if return_map is True:
-        return cldata_out,mdiffd
+        return cldatad,mdiffd
 
 def degrade_mask(inmask,nside_out=256):
     #stupid function to degrade a mask by making a map and degrading that
