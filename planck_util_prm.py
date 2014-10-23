@@ -226,13 +226,17 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
     mm1=hp.read_map(f1,[0,1,2],verbose=False)
     mm2=hp.read_map(f2,[0,1,2],verbose=False)
 
+    mmm1=[]
+    mmm2=[]
     for m1,m2 in zip(mm1,mm2):
         m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
         m2=hp.ud_grade(hp.ma(m2),nside_out=nside)
         tmask=m1.mask | m2.mask | tmask
+        mmm1.append(m1)
+        mmm2.append(m2)
     
     diff=[]
-    for m1,m2 in zip(mm1,mm2):
+    for m1,m2 in zip(mmm1,mmm2):
         d=m1-m2
         d.mask=tmask
         diff.append(d)
