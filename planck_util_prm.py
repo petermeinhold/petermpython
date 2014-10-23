@@ -218,6 +218,36 @@ def fitffpcls(cls):
         allfitcls[plabel]=fitcls
 
     return allfitcls
+    
+    
+def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
+    #assume tmask is already degraded
+    
+    mm1=hp.read_map(f1,[0,1,2],verbose=False))
+    mm2=hp.read_map(f2,[0,1,2],verbose=False))
+
+    for m1,m2 in zip(mm1,mm2):
+        m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
+        m2=hp.ud_grade(hp.ma(m2),nside_out=nside)
+        tmask=m1.mask | m2.mask | tmask
+    
+    diff=[]
+    for m1,m2 in zip(mm1,mm2):
+        d=m1-m2
+        d.mask=tmask
+        diff.append(d)
+    
+    skyfrac=1-float(tmask.sum())/len(tmask)            
+        
+    cldata=hp.anafast(diff)
+    cldata_out=[]
+    for cl in cldata:
+        cldata_out.append(cl/skyfrac)
+        
+    if return_map is False:
+        return cldata_out
+    if return_map is True:
+        return cldata_out,mdiffd
 
 def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True):
     colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
