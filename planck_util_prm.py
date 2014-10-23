@@ -251,7 +251,7 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
     if return_map is False:
         return cldata_out
     if return_map is True:
-        return cldata_out,mdiffd
+        return cldata_out,diff
 
 def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True):
     colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
