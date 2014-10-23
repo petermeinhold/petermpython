@@ -223,8 +223,8 @@ def fitffpcls(cls):
 def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
     #assume tmask is already degraded
     
-    mm1=hp.read_map(f1,[0,1,2],verbose=False))
-    mm2=hp.read_map(f2,[0,1,2],verbose=False))
+    mm1=hp.read_map(f1,[0,1,2],verbose=False)
+    mm2=hp.read_map(f2,[0,1,2],verbose=False)
 
     for m1,m2 in zip(mm1,mm2):
         m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
@@ -237,7 +237,7 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
         d.mask=tmask
         diff.append(d)
     
-    skyfrac=1-float(tmask.sum())/len(tmask)            
+    skyfrac=1-float(tmask.sum())/len(tmask)
         
     cldata=hp.anafast(diff)
     cldata_out=[]
