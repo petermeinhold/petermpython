@@ -12,7 +12,7 @@ def get_lfi_dx11_mask(nside):
     return tmask
     
 def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
-    #assume tmask is already degraded
+    #assume tmask input is already degraded
     
     mm1=hp.read_map(f1,[0,1,2],verbose=False)
     mm2=hp.read_map(f2,[0,1,2],verbose=False)
