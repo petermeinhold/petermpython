@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/global/project/projectdirs/planck/software/zonca/software/testenv')
 from testenv import cluster
     
 
@@ -13,4 +15,4 @@ for freq in freqs:
         cmd = [
             "python generate_ffp8_cls_cmd.py %s %s %s %s %s %s %s" % (freq,q1,s1,hr1,q2,s2,hr2)
             ]
-        cluster.run_serial("pipe_%s_%s_%s_%s_%s_%s_%s" % (freq,q1, s1,hr1,q2,s2,hr2), "\n".join(cmd), mem=5)
+        cluster.run_serial("pipe_%s_%s_%s_%s_%s_%s_%s" % (freq,q1, s1,hr1,q2,s2,hr2), "\n".join(cmd), mem=20)
