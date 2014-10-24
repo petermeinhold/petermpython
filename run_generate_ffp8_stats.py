@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("agg")
 import sys
 sys.path.append('/global/project/projectdirs/planck/software/zonca/software/testenv')
 from testenv import cluster
