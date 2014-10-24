@@ -3,6 +3,7 @@ import os
 import numpy as np
 import healpy as hp
 from glob import glob
+import cPickle
 
 def get_lfi_dx11_mask(nside):
     maskfile=open('/global/homes/p/peterm/masks/dx11_lfi_total_mask_2048.pkl','rb')
