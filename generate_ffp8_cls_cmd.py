@@ -53,12 +53,6 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
         return cldata_out,diff
 
 if __name__ == "__main__":
-    nside =256
-    topdir='/global/project/projectdirs/planck/data/ffp8/mc_noise/'
-    pkldir='/global/homes/p/peterm/ffp8_noise_cls_1000/'
-    tmask=get_lfi_dx11_mask(256)
-    mcdirlist=np.sort(glob(topdir+freq+'/'+freq+'_0*'))
-    homedir='/global/homes/p/peterm/'
     #arguments: freq s1,q1,hr1,s2, q2, hr2
     freq=sys.argv[1]
     q1=sys.argv[2]
@@ -67,6 +61,13 @@ if __name__ == "__main__":
     q2=sys.argv[5]
     s2=sys.argv[6]
     hr2=sys.argv[7]
+    nside =256
+    topdir='/global/project/projectdirs/planck/data/ffp8/mc_noise/'
+    pkldir='/global/homes/p/peterm/ffp8_noise_cls_1000/'
+    tmask=get_lfi_dx11_mask(256)
+    mcdirlist=np.sort(glob(topdir+freq+'/'+freq+'_0*'))
+    homedir='/global/homes/p/peterm/'
+
     
     cls=[]
     for mcdir in mcdirlist:
