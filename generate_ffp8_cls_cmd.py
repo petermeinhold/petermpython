@@ -61,6 +61,10 @@ if __name__ == "__main__":
     q2=sys.argv[5]
     s2=sys.argv[6]
     hr2=sys.argv[7]
+    q1=q1.replace('null','')
+    q2=q2.replace('null','')
+    hr1=hr1.replace('null','')
+    hr2=hr2.replace('null','')
     nside =256
     topdir='/global/project/projectdirs/planck/data/ffp8/mc_noise/'
     pkldir='/global/homes/p/peterm/ffp8_noise_cls_1000/'
