@@ -5,6 +5,13 @@ import healpy as hp
 from glob import glob
 import cPickle
 
+def degrade_mask(inmask,nside_out=256):
+    #stupid function to degrade a mask by making a map and degrading that
+    m=hp.ma(np.ones(len(inmask)))
+    m.mask=inmask
+    mdg=hp.ud_grade(m,nside_out=nside_out)
+    return mdg.mask
+    
 def get_lfi_dx11_mask(nside):
     maskfile=open('/global/homes/p/peterm/masks/dx11_lfi_total_mask_2048.pkl','rb')
     tmask=cPickle.load(maskfile)
