@@ -71,7 +71,6 @@ if __name__ == "__main__":
     tmask=get_lfi_dx11_mask(256)
     mcdirlist=np.sort(glob(topdir+freq+'/'+freq+'_0*'))
     homedir='/global/homes/p/peterm/'
-
     
     cls=[]
     for mcdir in mcdirlist:

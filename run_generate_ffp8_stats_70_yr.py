@@ -3,8 +3,6 @@ matplotlib.use("agg")
 import sys
 sys.path.append('/global/project/projectdirs/planck/software/zonca/software/testenv')
 from testenv import cluster
-    
-
 
 #years
 plotdir='/global/homes/p/peterm/notebooks/plotting/nulls/years/'
