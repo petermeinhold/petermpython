@@ -10,8 +10,8 @@ from testenv import cluster
 plotdir='/global/homes/p/peterm/notebooks/plotting/nulls/years/'
 s1list=['full','full','full','full','full','yr1+yr3','full','full']
 s2list=['full','yr1','yr2','yr3','yr4','yr2+yr4','yr1+yr3','yr2+yr4']
-hr1list=['_ringhalf_1','null','null','null','null','null','null','null']
-hr2list=['_ringhalf_2','null','null','null','null','null','null','null']
+hr1list=['_hr1','null','null','null','null','null','null','null']
+hr2list=['_hr2','null','null','null','null','null','null','null']
 q1list=['null','null','null','null','null','null','null','null']
 q2list=['null','null','null','null','null','null','null','null']
 freqs=['044']
