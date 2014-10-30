@@ -6,8 +6,8 @@ from testenv import cluster
 
 #years
 plotdir='/global/homes/p/peterm/notebooks/plotting/nulls/years/'
-s1list=['full','full','full','full','full','yr1+yr3','full','full']
-s2list=['full','yr1','yr2','yr3','yr4','yr2+yr4','yr1+yr3','yr2+yr4']
+s1list=['full','full','full','full','full','y13','full','full']
+s2list=['full','y1','y2','y3','y4','y24','y13','y24']
 hr1list=['_hr1','null','null','null','null','null','null','null']
 hr2list=['_hr2','null','null','null','null','null','null','null']
 q1list=['null','null','null','null','null','null','null','null']
@@ -18,4 +18,4 @@ for freq in freqs:
         cmd = [
             "python generate_ffp8_cls_cmd.py %s %s %s %s %s %s %s" % (freq,q1,s1,hr1,q2,s2,hr2)
             ]
-        cluster.run_serial("stats%s%s%s%s%s%s%s" % (freq,q1,s1,hr1,q2,s2,hr2), "\n".join(cmd), mem=20)
+        cluster.run_serial("stats%s%s" % (freq,s2), "\n".join(cmd), mem=20)
