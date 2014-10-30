@@ -252,6 +252,104 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
         return cldata_out
     if return_map is True:
         return cldata_out,diff
+        
+def read_and_diff_2_files_fast(f1,f2,f3,nside=256,tmask=None,return_map=False):
+    #assume tmask is already degraded- this version subtracts (f2+f3)/2 from f1
+    
+    mm1=hp.read_map(f1,[0,1,2],verbose=False)
+    mm2=hp.read_map(f2,[0,1,2],verbose=False)
+    mm3=hp.read_map(f3,[0,1,2],verbose=False)
+
+    mmm1=[]
+    mmm2=[]
+    mmm3=[]
+    for m1,m2 in zip(mm1,mm2):
+        m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
+        m2=hp.ud_grade(hp.ma(m2),nside_out=nside)
+        m3=hp.ud_grade(hp.ma(m3),nside_out=nside)
+        tmask=m1.mask | m2.mask | m3.mask | tmask
+        mmm1.append(m1)
+        mmm2.append(m2)
+        mmm3.append(m3)
+    
+    diff=[]
+    for m1,m2,m3 in zip(mmm1,mmm2,mmm3):
+        d=m1-(m2+m3)/2
+        d.mask=tmask
+        diff.append(d)
+    
+    skyfrac=1-float(tmask.sum())/len(tmask)
+        
+    cldata=hp.anafast(diff)
+    cldata_out=[]
+    for cl in cldata:
+        cldata_out.append(cl/skyfrac)
+        
+    if return_map is False:
+        return cldata_out
+    if return_map is True:
+        return cldata_out,diff
+        
+        
+def read_and_diff_2_files(f1,f2,f3,nside=None,tmask=None,corr1=None,corr2=None,corr3=None,return_map=False,return_dict=True):
+    #version to subtract mean of f2 ,f3 from f1
+    colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
+       
+    m1={}
+    m2={}
+    m3={}
+    for i in range(3):
+        mm1=hp.ma(hp.read_map(f1,[i],verbose=False))
+        m1[colnames[i].strip()]=mm1
+        mm2=hp.ma(hp.read_map(f2,[i],verbose=False))
+        m2[colnames[i].strip()]=mm2
+        mm3=hp.ma(hp.read_map(f3,[i],verbose=False))
+        m3[colnames[i].strip()]=mm3
+
+    keys=m1.keys()
+    # Generate differences
+    mdiff={}
+    for key in ['I_Stokes','Q_Stokes','U_Stokes']:
+        if tmask is None:
+            tmask= m1[key].mask | m2[key].mask
+        tmask=tmask | m1[key].mask | m2[key].mask
+        
+    if nside:
+        tmask=degrade_mask(tmask,nside_out=nside)        
+    for key in ['I_Stokes','Q_Stokes','U_Stokes']:
+        if corr1 is None:
+            mdiff[key]=hp.ma(m1[key]-(m2[key]+m3[key])/2.)
+        if corr1:
+            nside_map=hp.npix2nside(len(m1[key]))
+            corr1udg=hp.ud_grade(corr1[key],nside_map)
+            corr2udg=hp.ud_grade(corr2[key],nside_map)
+            corr3udg=hp.ud_grade(corr3[key],nside_map)
+            mdiff[key]=hp.ma((m1[key]-corr1udg)-((m2[key]-corr2udg)+(m3[key]-corr3udg)))
+    skyfrac=1-float(tmask.sum())/len(tmask)            
+    
+    mdiffd=[]
+    for key in ['I_Stokes','Q_Stokes','U_Stokes']:
+        if nside==None:
+            mkey=mdiff[key]
+            mkey.mask=tmask
+        if nside!=None:
+            mkey=hp.ud_grade(mdiff[key],nside_out=nside)    
+            mkey.mask=tmask
+        mdiffd.append(mkey)
+    cldata=hp.anafast(mdiffd)
+    cldata_out=[]
+    for cl in cldata:
+        cldata_out.append(cl/skyfrac)
+        
+    if return_dict:
+        cldatad={}
+        for i,spec in enumerate(['TT','EE','BB','TE','TB','EB']):
+            cldatad[spec]=cldata_out[i]            
+        cldata_out=cldatad
+    if return_map is False:
+        return cldata_out
+    if return_map is True:
+        return cldata_out,mdiffd
 
 def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True):
     colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
@@ -265,7 +363,6 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
         m2[colnames[i].strip()]=mm2
 
     keys=m1.keys()
-    keys
     # Generate differences
     mdiff={}
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
