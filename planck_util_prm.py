@@ -29,7 +29,7 @@ if os.sys.platform != 'win32':
     import healpy as hp
     import quickring as qr
     import pysqlite2.dbapi2 as sqlite3
-    from planck.LFI import LFI
+    from planck import LFI
     #import scikits.statsmodels.api as sm
 if os.sys.platform=='win32':
     import sqlite3
