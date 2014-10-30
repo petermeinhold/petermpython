@@ -65,8 +65,8 @@ if __name__ == "__main__":
     hhr1=sys.argv[4]
     qq2=sys.argv[5]
     s2=sys.argv[6]
-    s3=sys.argv[7]
-    hhr2=sys.argv[8]
+    hhr2=sys.argv[7]
+    s3=sys.argv[8]
     q1=qq1.replace('null','')
     q2=qq2.replace('null','')
     hr1=hhr1.replace('null','')
