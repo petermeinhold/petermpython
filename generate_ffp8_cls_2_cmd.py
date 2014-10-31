@@ -29,7 +29,7 @@ def read_and_diff_2_files_fast(f1,f2,f3,nside=256,tmask=None,return_map=False):
     mmm1=[]
     mmm2=[]
     mmm3=[]
-    for m1,m2 in zip(mm1,mm2):
+    for m1,m2,m3 in zip(mm1,mm2,mm3):
         m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
         m2=hp.ud_grade(hp.ma(m2),nside_out=nside)
         m3=hp.ud_grade(hp.ma(m3),nside_out=nside)
