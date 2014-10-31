@@ -17,6 +17,6 @@ freqs=['070']
 for freq in freqs:
     for q1,q2,s1,s2,hr1,hr2,s3 in zip(q1list,q2list,s1list,s2list,hr1list,hr2list,s3list):
         cmd = [
-            "python generate_ffp8_cls_cmd.py %s %s %s %s %s %s %s %s" % (freq,q1,s1,hr1,q2,s2,hr2,s3)
+            "python generate_ffp8_cls_2_cmd.py %s %s %s %s %s %s %s %s" % (freq,q1,s1,hr1,q2,s2,hr2,s3)
             ]
         cluster.run_serial("mcstats_%s_%s_%s_%s" % (freq,s1,s2,s3), "\n".join(cmd), mem=20)
