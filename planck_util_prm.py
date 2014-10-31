@@ -13,7 +13,7 @@ from glob import glob
 import pandas as pd
 import string
 from scipy.io import readsav
-import cPickle
+import pickle
 import warnings
 import sys
 sys.path.append('/global/homes/p/peterm/petermpython/paperplots/python/scripts')
@@ -27,8 +27,8 @@ warnings.filterwarnings('ignore')
 #import h5py but only if not windows
 if os.sys.platform != 'win32':
     import healpy as hp
-    import quickring as qr
-    import pysqlite2.dbapi2 as sqlite3
+    #import quickring as qr
+    import sqlite3
     from planck import LFI
     #import scikits.statsmodels.api as sm
 if os.sys.platform=='win32':
@@ -490,7 +490,7 @@ def read_like_slices(prefix='slices_pm',xspec='TE',directory='.'):
         spec['lowval']=np.array(lowval)
         spec['hival']=np.array(hival)
     else:
-        print 'No matching files'
+        print( 'No matching files')
         spec=None
     return spec
     
@@ -1112,9 +1112,9 @@ def get_dx10_map(chan='070',surv='yr1',half='',mask_ps=True,mask_gal=True,nside=
         poln=2
     
 
-    print base+mapname
+    print (base+mapname)
     fl=glob(base+mapname)
-    print fl
+    print (fl)
     if pol == None:
         m= hp.ma(hp.ud_grade(hp.read_map(fl[0],field=(0,1,2)),nside))
         totalmask= m[1] == 0
@@ -1178,9 +1178,9 @@ def get_dx_map(chan='70',surv='yr1_ringhalf_1',cal='dx9',mask_ps=False,pol='I'):
         poln=1
     if pol=='U':
         poln=2
-    print base+dirname+mapname
+    print (base+dirname+mapname)
     fl=glob(base+dirname+mapname)
-    print fl
+    print (fl)
     m= hp.ma(maskmap(hp.read_map(fl[0])))
     if mask_ps==True:
         psmask = np.logical_not(np.floor(hp.ud_grade(hp.read_map(glob('/project/projectdirs/planck/data/mission/DPC_maps/dx8/lfi/DX8_MASKs/' + 'mask_ps_%dGHz_*.fits' % freq)[0]), nside)))
@@ -1320,7 +1320,7 @@ def get_ucds3(db="/global/homes/p/peterm/ucds-dx10.db"):
     firstsci=True
     for table in tables[1:]:
         digits=get_digits(table[0])
-        print digits
+        print (digits)
         df=pd.read_sql('select * from '+ table[0],conn)
         if 'pointingID' in df:
             n=len(df.pointingID)
@@ -1449,7 +1449,7 @@ def get_cds_key_value(key='fourk_temp',value='cernox_4k',cdsdir='/project/projec
     fls.sort()
     d=[]
     for f in fls:
-        print f
+        print (f)
         cds=readsav(f)
         if key in cds.keys():
             d.append(cds[key][value][0].flatten())
@@ -1464,7 +1464,7 @@ def get_cds(cdsdir='/project/projectdirs/planck/data/mission/lfi_raw_sync/CDS/')
     fls.sort()
     cds=readsav(fls[0],python_dict=True)
     for f in fls:
-        print f
+        print (f)
         cd=readsav(f,python_dict=True)
         for key in cd.keys():
             cds[key]=np.hstack([cds[key],cd[key][0]])
@@ -1797,9 +1797,9 @@ def fit_fknee(psd,freqs):
     p=np.array([np.sqrt(np.mean(psd[topfreqs])),.15,1.0])
     m=optimize.leastsq(psd_fit_function_resid,p,args=(freqs,psd,err),full_output=1)
     pfinal=m[0]
-    print 'wnlevel',pfinal[0]
-    print 'Fknee' ,pfinal[1]
-    print 'alpha' ,pfinal[2]
+    print ('wnlevel',pfinal[0])
+    print ('Fknee' ,pfinal[1])
+    print ('alpha' ,pfinal[2])
     return(m)
     
 def smooth(x,window_len=11,window='hanning'):
@@ -1835,10 +1835,10 @@ def smooth(x,window_len=11,window='hanning'):
     """
 
     if x.ndim != 1:
-        raise ValueError, "smooth only accepts 1 dimension arrays."
+        raise ValueError("smooth only accepts 1 dimension arrays.")
 
     if x.size < window_len:
-        raise ValueError, "Input vector needs to be bigger than window size."
+        raise ValueError("Input vector needs to be bigger than window size.")
 
 
     if window_len<3:
@@ -1846,7 +1846,7 @@ def smooth(x,window_len=11,window='hanning'):
 
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+        raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 
 
     s=np.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
