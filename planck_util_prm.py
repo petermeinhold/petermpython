@@ -13,7 +13,7 @@ from glob import glob
 import pandas as pd
 import string
 from scipy.io import readsav
-import pickle
+import cPickle
 import warnings
 import sys
 sys.path.append('/global/homes/p/peterm/petermpython')
