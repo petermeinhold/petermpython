@@ -16,10 +16,11 @@ from scipy.io import readsav
 import pickle
 import warnings
 import sys
-sys.path.append('/global/homes/p/peterm/petermpython/paperplots/python/scripts')
 sys.path.append('/global/homes/p/peterm/petermpython')
-from setup_matplotlib import *
-from planckcolors import colombi1_cmap 
+
+#sys.path.append('/global/homes/p/peterm/petermpython/paperplots/python/scripts')
+#from setup_matplotlib import *
+#from planckcolors import colombi1_cmap 
 
 warnings.filterwarnings('ignore')
 #comment out for local use of planck_util
