@@ -13,7 +13,7 @@ from glob import glob
 import pandas as pd
 import string
 from scipy.io import readsav
-import cPickle
+import pickle
 import warnings
 import sys
 sys.path.append('/global/homes/p/peterm/petermpython')
@@ -169,7 +169,7 @@ def savef(path, ext='png', close=True, verbose=False):
     
 def get_lfi_dx11_mask(nside):
     maskfile=open('/global/homes/p/peterm/masks/dx11_lfi_total_mask_2048.pkl','rb')
-    tmask=cPickle.load(maskfile)
+    tmask=pickle.load(maskfile)
     maskfile.close()
     tmask=degrade_mask(tmask,nside_out=nside)
     return tmask
@@ -179,7 +179,7 @@ def get_ffp8_cls(freq,s1,s2,hr1,hr2):
     topdir='/global/homes/p/peterm/ffp8_noise_cls/'
     pklfilename=topdir+'ffp8_noise_null_cls_'+freq+s1+hr1+s2+hr2+'.pkl'
     pklfile=open(pklfilename,'rb')
-    cls=cPickle.load(pklfile)
+    cls=pickle.load(pklfile)
     pklfile.close()
     return cls
     
@@ -189,7 +189,7 @@ def get_ffp8_mean_fit_cls(freq,q1,q2,s1,s2,hr1,hr2,det=''):
     topdir='/global/homes/p/peterm/ffp8_noise_cls/'
     pklfilename=topdir+'cl_fit_ffp8_noise_null_cls_'+freq+det+q1+s1+hr1+q2+s2+hr2+'.pkl'
     pklfile=open(pklfilename,'rb')
-    cls=cPickle.load(pklfile)
+    cls=pickle.load(pklfile)
     pklfile.close()
     return cls
     
