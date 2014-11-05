@@ -18,8 +18,8 @@ import warnings
 import sys
 sys.path.append('/global/homes/p/peterm/petermpython')
 
-sys.path.append('/global/homes/p/peterm/paperplots/python/scripts')
-from setup_matplotlib import *
+#sys.path.append('/global/homes/p/peterm/paperplots/python/scripts')
+from oldsetup_matplotlib import *
 from planckcolors import colombi1_cmap 
 
 warnings.filterwarnings('ignore')
