@@ -38,7 +38,7 @@ if os.sys.platform=='win32':
 import os
 import matplotlib.pyplot as plt
 
-def make_gridmap(inputmap):
+def make_gridmap(inputmap,cmap):
     '''
     Function to use correct ct and produce gridmap for paper quality plotting
     '''
@@ -65,7 +65,7 @@ def make_gridmap(inputmap):
       
     colormaptag = "colombi1_"
     outmap={}
-    outmap['cmap'] = colombi1_cmap
+    outmap['cmap'] = cmap
     outmap['longitude']=longitude
     outmap['latitude']=latitude
     outmap['data']=grid_map
