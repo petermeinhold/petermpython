@@ -3,7 +3,7 @@ import os
 import numpy as np
 import healpy as hp
 from glob import glob
-import cPickle
+import pickle
 
 def degrade_mask(inmask,nside_out=256):
     #stupid function to degrade a mask by making a map and degrading that
@@ -14,7 +14,7 @@ def degrade_mask(inmask,nside_out=256):
     
 def get_lfi_dx11_mask(nside):
     maskfile=open('/global/homes/p/peterm/masks/dx11_lfi_total_mask_2048.pkl','rb')
-    tmask=cPickle.load(maskfile)
+    tmask=pickle.load(maskfile)
     maskfile.close()
     tmask=degrade_mask(tmask,nside_out=nside)
     return tmask
@@ -81,9 +81,9 @@ if __name__ == "__main__":
         for mcnum in mcnumlist:
             f1=mcdir+'/ffp8_noise_%s%s_%s_map_mc_%s%s.fits' %(freq,q1,s1,mcnum,hr1)
             f2=mcdir+'/ffp8_noise_%s%s_%s_map_mc_%s%s.fits' %(freq,q2,s2,mcnum,hr2)
-            print f1
+            print(f1)
             cls.append(read_and_diff_files_fast(f1,f2,nside=256,tmask=tmask))           
     pklfilename=pkldir+'/ffp8_noise_null_cls_'+freq+s1+hr1+s2+hr2+'.pkl'
     pklfile=open(pklfilename,'wb')
-    cPickle.dump(cls,pklfile)
+    pickle.dump(cls,pklfile)
     pklfile.close()
