@@ -19,8 +19,8 @@ import sys
 sys.path.append('/global/homes/p/peterm/petermpython')
 
 #sys.path.append('/global/homes/p/peterm/paperplots/python/scripts')
-from old_setup_matplotlib import *
-from planckcolors import colombi1_cmap 
+#from old_setup_matplotlib import *
+#from planckcolors import colombi1_cmap 
 
 warnings.filterwarnings('ignore')
 #comment out for local use of planck_util
