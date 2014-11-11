@@ -83,7 +83,7 @@ if __name__ == "__main__":
             f2=mcdir+'/ffp8_noise_%s%s_%s_map_mc_%s%s.fits' %(freq,q2,s2,mcnum,hr2)
             print(f1)
             cls.append(read_and_diff_files_fast(f1,f2,nside=256,tmask=tmask))           
-    pklfilename=pkldir+'/ffp8_noise_null_cls_'+freq+s1+hr1+s2+hr2+'.pkl'
+    pklfilename=pkldir+'/ffp8_noise_null_cls_'+freq+q1+s1+hr1+q2+s2+hr2+'.pkl'
     pklfile=open(pklfilename,'wb')
     pickle.dump(cls,pklfile)
     pklfile.close()
