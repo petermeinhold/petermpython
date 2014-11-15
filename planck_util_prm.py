@@ -371,7 +371,7 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
             tmask= m1[key].mask | m2[key].mask
         tmask=tmask | m1[key].mask | m2[key].mask
         
-    if nside:
+    if nside!=None:
         tmask=degrade_mask(tmask,nside_out=nside)        
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
         if corr1 is None:
