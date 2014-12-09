@@ -639,7 +639,7 @@ def make_bmask(nside=1024,bmax=30):
     blk=hp.ma(np.arange(npix))
     theta,phi=hp.pix2ang(nside,blk)
     b=180*(theta-np.pi/2.)/np.pi
-    blk=hp.ma(np.ones(npix))
+    blk=hp.ma(np.ones(npix),badval=-1e-20)
     blk.mask=np.abs(b)<bmax
     blk[blk.mask]=0
     blk=hp.ma(maskmap(blk))
