@@ -636,13 +636,13 @@ def make_bmask(nside=1024,bmax=30):
     returns masked array of ones and zeros where mask is
     """
     npix=hp.nside2npix(nside)
-    blk=hp.ma(np.arange(npix))
+    blk=hp.ma(np.arange(npix),badval=-1e-20)
     theta,phi=hp.pix2ang(nside,blk)
     b=180*(theta-np.pi/2.)/np.pi
     blk=hp.ma(np.ones(npix),badval=-1e-20)
     blk.mask=np.abs(b)<bmax
     blk[blk.mask]=0
-    blk=hp.ma(maskmap(blk))
+    blk=hp.ma(maskmap(blk),badval=-1e-20)
     return blk
     
 def get_ring_for_spin_vec( vec, npts=500 ):
