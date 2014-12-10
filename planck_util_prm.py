@@ -221,8 +221,9 @@ def fitffpcls(cls):
     return allfitcls
     
     
-def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
-    #assume tmask is already degraded
+def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_monopole=True):
+    #assume tmask is already degraded, remove_monopole=True: remove from differences before anafast
+    #monopole is removed from I,Q U maps after masking
     
     mm1=hp.read_map(f1,[0,1,2],verbose=False)
     mm2=hp.read_map(f2,[0,1,2],verbose=False)
@@ -240,6 +241,8 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
     for m1,m2 in zip(mmm1,mmm2):
         d=m1-m2
         d.mask=tmask
+        if remove_monopole:
+            d=hp.remove_monopole(d)
         diff.append(d)
     
     skyfrac=1-float(tmask.sum())/len(tmask)
@@ -254,7 +257,7 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False):
     if return_map is True:
         return cldata_out,diff
         
-def read_and_diff_2_files_fast(f1,f2,f3,nside=256,tmask=None,return_map=False):
+def read_and_diff_2_files_fast(f1,f2,f3,nside=256,tmask=None,return_map=False,remove_monopole=True):
     #assume tmask is already degraded- this version subtracts (f2+f3)/2 from f1
     
     mm1=hp.read_map(f1,[0,1,2],verbose=False)
@@ -277,6 +280,8 @@ def read_and_diff_2_files_fast(f1,f2,f3,nside=256,tmask=None,return_map=False):
     for m1,m2,m3 in zip(mmm1,mmm2,mmm3):
         d=m1-(m2+m3)/2
         d.mask=tmask
+        if remove_monopole:
+            d=hp.remove_monopole(d)        
         diff.append(d)
     
     skyfrac=1-float(tmask.sum())/len(tmask)
@@ -292,7 +297,7 @@ def read_and_diff_2_files_fast(f1,f2,f3,nside=256,tmask=None,return_map=False):
         return cldata_out,diff
         
         
-def read_and_diff_2_files(f1,f2,f3,nside=None,tmask=None,corr1=None,corr2=None,corr3=None,return_map=False,return_dict=True):
+def read_and_diff_2_files(f1,f2,f3,nside=None,tmask=None,corr1=None,corr2=None,corr3=None,return_map=False,return_dict=True,remove_monopole=True):
     #version to subtract mean of f2 ,f3 from f1
     colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
        
@@ -336,6 +341,8 @@ def read_and_diff_2_files(f1,f2,f3,nside=None,tmask=None,corr1=None,corr2=None,c
         if nside!=None:
             mkey=hp.ud_grade(mdiff[key],nside_out=nside)    
             mkey.mask=tmask
+        if remove_monopole:
+            mkey=hp.remove_monopole(mkey)
         mdiffd.append(mkey)
     cldata=hp.anafast(mdiffd)
     cldata_out=[]
@@ -352,7 +359,7 @@ def read_and_diff_2_files(f1,f2,f3,nside=None,tmask=None,corr1=None,corr2=None,c
     if return_map is True:
         return cldata_out,mdiffd
 
-def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True):
+def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True,remove_monopole=True):
     colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
        
     m1={}
@@ -391,6 +398,8 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
         if nside!=None:
             mkey=hp.ud_grade(mdiff[key],nside_out=nside)    
             mkey.mask=tmask
+        if remove_monopole:
+            mkey=hp.remove_monopole(mkey)
         mdiffd.append(mkey)
     cldata=hp.anafast(mdiffd)
     cldata_out=[]
