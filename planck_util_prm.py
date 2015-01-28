@@ -36,22 +36,22 @@ if os.sys.platform=='win32':
     import sqlite3
     
 import os
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt    
 
 def get_lfi_dx11_mask(nside,apo=False,masktype='pol'):
     """
     now using masks suggested by AZa on 1/27/2015, common mask, should already have PS
     apo=true is apodized, masktype='pol' is polarized mask, masktype='int' intensity mask
     """
+    maskdir='/global/homes/p/peterm/masks/'
     if apo:
-        f='dx11_v2_common_%s_mask_010a_1024_apo_030a.fits' %masktype
+        f=maskdir+'dx11_v2_common_%s_mask_010a_1024_apo_030a.fits' %masktype
         tmask=maskmap(hp.ma(hp.read_map(f)))
         tmask=hp.ud_grade(tmask,nside_out=nside)
     else:
-        f='dx11_v2_common_%s_mask_010a_1024.fits' %masktype
+        f=maskdir+'dx11_v2_common_%s_mask_010a_1024.fits' %masktype
         tmask=hp.ma(hp.read_map(f)) 
         tmask=degrade_mask(tmask,nside_out=nside)
-    tmask=hp.ma(tmask)
     return tmask
     
 
