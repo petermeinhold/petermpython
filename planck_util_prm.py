@@ -46,10 +46,12 @@ def get_lfi_dx11_mask(nside,apo=False,masktype='pol'):
     maskdir='/global/homes/p/peterm/masks/'
     if apo:
         f=maskdir+'dx11_v2_common_%s_mask_010a_1024_apo_030a.fits' %masktype
+        print(f)
         tmask=maskmap(hp.ma(hp.read_map(f)))
         tmask=hp.ud_grade(tmask,nside_out=nside)
     else:
         f=maskdir+'dx11_v2_common_%s_mask_010a_1024.fits' %masktype
+        print(f)
         tmask=hp.ma(hp.read_map(f)) 
         tmask=degrade_mask(tmask,nside_out=nside)
     return tmask
