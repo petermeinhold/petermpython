@@ -183,13 +183,7 @@ def savef(path, ext='png', close=True, verbose=False):
         plt.close()
     if verbose:
         print("Done")
-    
-def get_lfi_dx11_mask(nside):
-    maskfile=open('/global/homes/p/peterm/masks/dx11_lfi_total_mask_2048.pkl','rb')
-    tmask=pickle.load(maskfile)
-    maskfile.close()
-    tmask=degrade_mask(tmask,nside_out=nside)
-    return tmask
+
     
 def get_ffp8_cls(freq,s1,s2,hr1,hr2):
     #find and read the pickled CL list from FFP8 noise sims
