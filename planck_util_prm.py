@@ -36,8 +36,31 @@ if os.sys.platform=='win32':
     import sqlite3
     
 import os
-import matplotlib.pyplot as plt    
+import matplotlib.pyplot as plt  
 
+def get_model_spectrum_2014():
+    """
+    read in theoretical spectrum obtained from Dan (TT,EE from Paolo, BB from a camb run by Dan)
+    store to a dictionary, by frequency and by spectrum. include a 'raw' frequency for un windowed spectrum'
+    assume for this just the 't' window function
+    """
+    tteespec=genfromtxt('/global/homes/p/peterm/model_spectrum_2014/base_plikHM_TT_lowTEB.minimum.dat')
+    bbspec=genfromtxt('/global/homes/p/peterm/model_spectrum_2014/par_0.1_0.0000_tensCls.dat')
+    bbspec_extend=interp(tteespec[:2499,0],bbspec[:,0],bbspec[:,3])
+    
+    cl={}
+    cl['l']=tteespec[:2499,0]
+    cl['TT']=tteespec[:2499,1]
+    cl['EE']=tteespec[:2499,3]
+    cl['BB']=bbspec_extend
+    for freq in ['030','044','070']:
+        bl=hp.read_cl('/global/homes/p/peterm/model_spectrum_2014/window_functions_2014/window_functions_2014/bls_GB_%s_corr_T.fits'  %freq)
+        cl[freq]={}
+        cl[freq]['l']=cl['l'][:2000]
+        for spec in ['TT','EE','BB']:
+            cl[freq][spec]=cl[spec][:2000]*bl[:2000]
+    return cl
+    
 def get_lfi_dx11_mask(nside,apo=False,masktype='pol'):
     """
     now using masks suggested by AZa on 1/27/2015, common mask, should already have PS
