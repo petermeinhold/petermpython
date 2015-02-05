@@ -61,22 +61,16 @@ def get_model_spectrum_2014():
             cl[freq][spec]=cl[spec][:2000]*bl[:2000]
     return cl
     
-def get_lfi_dx11_mask(nside,apo=False,masktype='pol'):
+def get_lfi_dx11_mask(nside,masktype='pol'):
     """
     now using masks suggested by AZa on 1/27/2015, common mask, should already have PS
     apo=true is apodized, masktype='pol' is polarized mask, masktype='int' intensity mask
     """
     maskdir='/global/homes/p/peterm/masks/'
-    if apo:
-        f=maskdir+'dx11_v2_common_%s_mask_010a_1024_apo_030a.fits' %masktype
-        print(f)
-        tmask=maskmap(hp.ma(hp.read_map(f)))
-        tmask=hp.ud_grade(tmask,nside_out=nside)
-    else:
-        f=maskdir+'dx11_v2_common_%s_mask_010a_1024.fits' %masktype
-        print(f)
-        tmask=hp.ma(hp.read_map(f)) 
-        tmask=degrade_mask(tmask,nside_out=nside)
+    f=maskdir+'dx11_v2_common_%s_mask_010a_1024.fits' %masktype
+    tmask=hp.ma(hp.read_map(f)) 
+    tmask=degrade_mask(tmask,nside_out=nside)
+    tmask=logical_not(tmask)
     return tmask
     
 
