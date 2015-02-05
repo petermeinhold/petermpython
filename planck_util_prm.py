@@ -77,7 +77,6 @@ def get_lfi_dx11_mask(nside,apo=False,masktype='pol'):
         print(f)
         tmask=hp.ma(hp.read_map(f)) 
         tmask=degrade_mask(tmask,nside_out=nside)
-    tmask=hp.ma(tmask)
     return tmask
     
 
