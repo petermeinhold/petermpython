@@ -206,7 +206,7 @@ def savef(path, ext='png', close=True, verbose=False):
     
 def get_ffp8_cls(freq,s1,s2,hr1,hr2):
     #find and read the pickled CL list from FFP8 noise sims
-    topdir='/global/homes/p/peterm/ffp8_noise_cls/'
+    topdir='/global/homes/p/peterm/ffp8_noise_cls_1000/'
     pklfilename=topdir+'ffp8_noise_null_cls_'+freq+s1+hr1+s2+hr2+'.pkl'
     pklfile=open(pklfilename,'rb')
     cls=pickle.load(pklfile)
