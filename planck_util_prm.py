@@ -28,7 +28,8 @@ warnings.filterwarnings('ignore')
 #import h5py but only if not windows
 if os.sys.platform != 'win32':
     import healpy as hp
-    #import quickring as qr
+    if sys.version[0]==2:
+        import quickring as qr
     import sqlite3
     from planck import LFI
     #import scikits.statsmodels.api as sm
