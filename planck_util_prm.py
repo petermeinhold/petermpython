@@ -61,7 +61,7 @@ def get_model_spectrum_2014():
             cl[freq][spec]=cl[spec][:2000]*bl[:2000]
     return cl
     
-def get_lfi_dx11_mask(nside,masktype='pol'):
+def get_lfi_dx11_mask(nside,masktype='pol',ps=True):
     """
     now using masks suggested by AZa on 1/27/2015, common mask, should already have PS
     apo=true is apodized, masktype='pol' is polarized mask, masktype='int' intensity mask
@@ -71,6 +71,10 @@ def get_lfi_dx11_mask(nside,masktype='pol'):
     tmask=hp.ma(hp.read_map(f)) 
     tmask=degrade_mask(tmask,nside_out=nside)
     tmask=logical_not(tmask)
+    if ps:
+        fpsmask30='/global/project/projectdirs/planck/data/mission/DPC_maps/dx9_delta/lfi/MASKs/mask_ps_30GHz_beam33amin_nside2048.00_DX9_nonblind_holesize3.fits'
+        psmask30 = np.logical_not(np.floor(hp.ud_grade(hp.read_map(fpsmask30), nside)))
+        tmask=psmask30.astype(np.bool)|tmask.astype(np.bool)
     return tmask
     
 
