@@ -21,7 +21,7 @@ def get_lfi_dx11_mask(nside,masktype='int',ps=True):
     f=maskdir+'dx11_v2_common_%s_mask_010a_1024.fits' %masktype
     tmask=hp.ma(hp.read_map(f)) 
     tmask=degrade_mask(tmask,nside_out=nside)
-    tmask=logical_not(tmask)
+    tmask=np.logical_not(tmask)
     if ps:
         fpsmask30='/global/project/projectdirs/planck/data/mission/DPC_maps/dx9_delta/lfi/MASKs/mask_ps_30GHz_beam33amin_nside2048.00_DX9_nonblind_holesize3.fits'
         psmask30 = np.logical_not(np.floor(hp.ud_grade(hp.read_map(fpsmask30), nside)))
