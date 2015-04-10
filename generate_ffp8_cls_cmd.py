@@ -12,7 +12,7 @@ def degrade_mask(inmask,nside_out=256):
     mdg=hp.ud_grade(m,nside_out=nside_out)
     return mdg.mask
     
-def get_lfi_dx11_mask(nside,masktype='pol',ps=True):
+def get_lfi_dx11_mask(nside,masktype='int',ps=True):
     """
     now using masks suggested by AZa on 1/27/2015, common mask, should already have PS
     apo=true is apodized, masktype='pol' is polarized mask, masktype='int' intensity mask

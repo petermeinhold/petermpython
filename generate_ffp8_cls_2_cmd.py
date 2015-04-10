@@ -12,11 +12,21 @@ def degrade_mask(inmask,nside_out=256):
     mdg=hp.ud_grade(m,nside_out=nside_out)
     return mdg.mask
     
-def get_lfi_dx11_mask(nside):
-    maskfile=open('/global/homes/p/peterm/masks/dx11_lfi_total_mask_2048.pkl','rb')
-    tmask=pickle.load(maskfile)
-    maskfile.close()
+    
+def get_lfi_dx11_mask(nside,masktype='int',ps=True):
+    """
+    now using masks suggested by AZa on 1/27/2015, common mask, should already have PS
+    apo=true is apodized, masktype='pol' is polarized mask, masktype='int' intensity mask
+    """
+    maskdir='/global/homes/p/peterm/masks/'
+    f=maskdir+'dx11_v2_common_%s_mask_010a_1024.fits' %masktype
+    tmask=hp.ma(hp.read_map(f)) 
     tmask=degrade_mask(tmask,nside_out=nside)
+    tmask=logical_not(tmask)
+    if ps:
+        fpsmask30='/global/project/projectdirs/planck/data/mission/DPC_maps/dx9_delta/lfi/MASKs/mask_ps_30GHz_beam33amin_nside2048.00_DX9_nonblind_holesize3.fits'
+        psmask30 = np.logical_not(np.floor(hp.ud_grade(hp.read_map(fpsmask30), nside)))
+        tmask=psmask30.astype(np.bool)|tmask.astype(np.bool)
     return tmask
 
 def read_and_diff_2_files_fast(f1,f2,f3,nside=256,tmask=None,return_map=False):
@@ -73,7 +83,7 @@ if __name__ == "__main__":
     hr2=hhr2.replace('null','')
     nside =256
     topdir='/global/project/projectdirs/planck/data/ffp8/mc_noise/'
-    pkldir='/global/homes/p/peterm/ffp8_noise_cls_1000/'
+    pkldir='/global/homes/p/peterm/ffp8_noise_cls_1000_dx11maskps/'
     tmask=get_lfi_dx11_mask(256)
     mcdirlist=np.sort(glob(topdir+freq+'/'+freq+'_0*'))
     homedir='/global/homes/p/peterm/'
