@@ -19,4 +19,4 @@ for freq in freqs:
         cmd = [
             "python generate_ffp8_cls_2_cmd.py %s %s %s %s %s %s %s %s" % (freq,q1,s1,hr1,q2,s2,hr2,s3)
             ]
-        cluster.run_serial("mcstats_%s_%s_%s_%s" % (freq,s1,s2,s3), "\n".join(cmd), mem=20, hours=8)
+        cluster.run_serial("cl70_%s_%s" % (s2,s3), "\n".join(cmd), mem=20, hours=8)
