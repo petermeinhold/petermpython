@@ -18,5 +18,4 @@ for freq in freqs:
         cmd = [
             "python generate_ffp8_cls_cmd.py %s %s %s %s %s %s %s" % (freq,q1,s1,hr1,q2,s2,hr2)
             ]
-        print cmd
         cluster.run_serial("cl_yr%s%s" % (freq,s2), "\n".join(cmd), mem=20)
