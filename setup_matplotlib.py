@@ -3,6 +3,7 @@ from matplotlib import rcParams, rc
 
 # common setup for matplotlib
 params = {'backend': 'pdf',
+          'savefig.dpi': 300, # save figures to 300 dpi
           'axes.labelsize': 10,
           'text.fontsize': 10,
           'legend.fontsize': 10,
@@ -16,7 +17,7 @@ params = {'backend': 'pdf',
           'font.sans-serif':'FreeSans'}
 
 # use of Sans Serif also in math mode
-rc('text.latex', preamble='b\usepackage{sfmath}')
+rc('text.latex', preamble=r'\usepackage{sfmath}')
 
 rcParams.update(params)
 
