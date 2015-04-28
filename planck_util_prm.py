@@ -255,12 +255,12 @@ def fitffpcls(cls):
     return allfitcls
     
     
-def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_monopole=True):
+def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_monopole=True,hit_normalize=False,fullmap=None):
     #assume tmask is already degraded, remove_monopole=True: remove from differences before anafast
     #monopole is removed from I,Q U maps after masking
-    
-    mm1=hp.read_map(f1,[0,1,2],verbose=False)
-    mm2=hp.read_map(f2,[0,1,2],verbose=False)
+  
+    mm1=hp.read_map(f1,[0,1,2,3],verbose=False)
+    mm2=hp.read_map(f2,[0,1,2,3],verbose=False)
 
     mmm1=[]
     mmm2=[]
@@ -271,9 +271,15 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_
         mmm1.append(m1)
         mmm2.append(m2)
     
+    if hit_normalize == True:
+        hit_full=hp.read_map(fullmap,[3],verbose=False)
+        whit = np.sqrt(hit_full*(1./m1[3]+1./m2[3])) # m1[3] and m2[3] are the hit counts of the two maps to be nulled
+    else:
+        whit = np.double(2)
     diff=[]
+    
     for m1,m2 in zip(mmm1,mmm2):
-        d=m1-m2
+        d=(m1-m2)/whit
         d.mask=tmask
         if remove_monopole:
             d=hp.remove_monopole(d)
@@ -393,7 +399,7 @@ def read_and_diff_2_files(f1,f2,f3,nside=None,tmask=None,corr1=None,corr2=None,c
     if return_map is True:
         return cldata_out,mdiffd
 
-def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True,remove_monopole=True):
+def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True,remove_monopole=True,hit_normalize=False,fullmap=None):
     colnames=['I_Stokes','Q_Stokes' ,'U_Stokes' ,'Hits    ' ,'II_cov  ' ,'IQ_cov  ' ,'IU_cov  ' ,'QQ_cov  ' ,'QU_cov  ' ,'UU_cov  ' ]
        
     m1={}
@@ -405,6 +411,12 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
         m2[colnames[i].strip()]=mm2
 
     keys=m1.keys()
+    if hit_normalize == True:
+        hit_full=hp.read_map(fullmap,[3],verbose=False)
+        whit = np.sqrt(hit_full*(1./m1[3]+1./m2[3])) # m1[3] and m2[3] are the hit counts of the two maps to be nulled
+    else:
+        whit = np.double(2)
+        
     # Generate differences
     mdiff={}
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
@@ -416,12 +428,12 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
         tmask=degrade_mask(tmask,nside_out=nside)        
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
         if corr1 is None:
-            mdiff[key]=hp.ma(m1[key]-m2[key])
+            mdiff[key]=hp.ma((m1[key]-m2[key])/whit)
         if corr1:
             nside_map=hp.npix2nside(len(m1[key]))
             corr1udg=hp.ud_grade(corr1[key],nside_map)
             corr2udg=hp.ud_grade(corr2[key],nside_map)
-            mdiff[key]=hp.ma((m1[key]-corr1udg)-(m2[key]-corr2udg))
+            mdiff[key]=hp.ma(((m1[key]-corr1udg)-(m2[key]-corr2udg))/whit)
     skyfrac=1-float(tmask.sum())/len(tmask)            
     # Get MC noise per pixel IQU
     mdiffd=[]
