@@ -264,15 +264,16 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_
 
     mmm1=[]
     mmm2=[]
-    for m1,m2 in zip(mm1,mm2):
-        m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
-        m2=hp.ud_grade(hp.ma(m2),nside_out=nside)
+    powers=[None,None,None,-2]
+    for m1,m2,power in zip(mm1,mm2,powers):
+        m1=hp.ud_grade(hp.ma(m1),nside_out=nside,power=power)
+        m2=hp.ud_grade(hp.ma(m2),nside_out=nside,power=power)
         tmask=m1.mask | m2.mask | tmask
         mmm1.append(m1)
         mmm2.append(m2)
     
     if hit_normalize == True:
-        hit_full=hp.read_map(fullmap,[3],verbose=False)
+        hit_full=hp.ud_grade(hp.read_map(fullmap,[3],verbose=False),nside_out=nside,power=-2)
         whit = np.sqrt(hit_full*(1./m1[3]+1./m2[3])) # m1[3] and m2[3] are the hit counts of the two maps to be nulled
     else:
         whit = np.double(2)
@@ -404,16 +405,24 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
        
     m1={}
     m2={}
+    if nside!=None:
+        tmask=degrade_mask(tmask,nside_out=nside)   
     for i in range(3):
         mm1=hp.ma(hp.read_map(f1,[i],verbose=False))
+        if nside!=None:
+                mm1=hp.ud_grade(mm1,nside_out=nside)
         m1[colnames[i].strip()]=mm1
         mm2=hp.ma(hp.read_map(f2,[i],verbose=False))
+        if nside!=None:
+                mm2=hp.ud_grade(mm2,nside_out=nside)
         m2[colnames[i].strip()]=mm2
 
     keys=m1.keys()
     if hit_normalize == True:
-        hit_full=hp.read_map(fullmap,[3],verbose=False)
-        whit = np.sqrt(hit_full*(1./m1[3]+1./m2[3])) # m1[3] and m2[3] are the hit counts of the two maps to be nulled
+        m1h=hp.ud_grade(hp.read_map(f1,[3],verbose=False),nside_out=nside,power=-2)
+        m2h=hp.ud_grade(hp.read_map(f2,[3],verbose=False),nside_out=nside,power=-2)
+        hit_full=hp.ud_grade(hp.read_map(fullmap,[3],verbose=False),nside=nside,power=-2)
+        whit = np.sqrt(hit_full*(1./m1h+1./m2h)) # m1h and m2h are the hit counts of the two maps to be nulled
     else:
         whit = np.double(2)
         
@@ -422,28 +431,16 @@ def read_and_diff_files(f1,f2,nside=None,tmask=None,corr1=None,corr2=None,return
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
         if tmask is None:
             tmask= m1[key].mask | m2[key].mask
-        tmask=tmask | m1[key].mask | m2[key].mask
-        
-    if nside!=None:
-        tmask=degrade_mask(tmask,nside_out=nside)        
+        tmask=tmask | m1[key].mask | m2[key].mask      
+     
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
-        if corr1 is None:
-            mdiff[key]=hp.ma((m1[key]-m2[key])/whit)
-        if corr1:
-            nside_map=hp.npix2nside(len(m1[key]))
-            corr1udg=hp.ud_grade(corr1[key],nside_map)
-            corr2udg=hp.ud_grade(corr2[key],nside_map)
-            mdiff[key]=hp.ma(((m1[key]-corr1udg)-(m2[key]-corr2udg))/whit)
+        mdiff[key]=hp.ma((m1[key]-m2[key])/whit)
     skyfrac=1-float(tmask.sum())/len(tmask)            
     # Get MC noise per pixel IQU
     mdiffd=[]
     for key in ['I_Stokes','Q_Stokes','U_Stokes']:
-        if nside==None:
-            mkey=mdiff[key]
-            mkey.mask=tmask
-        if nside!=None:
-            mkey=hp.ud_grade(mdiff[key],nside_out=nside)    
-            mkey.mask=tmask
+        mkey=mdiff[key]
+        mkey.mask=tmask
         if remove_monopole:
             mkey=hp.remove_monopole(mkey)
         mdiffd.append(mkey)
