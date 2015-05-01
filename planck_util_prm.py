@@ -254,33 +254,70 @@ def fitffpcls(cls):
 
     return allfitcls
     
-    
-def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_monopole=True,hit_normalize=False,fullmap=None):
+def read_and_diff_files_fast_hitweight(f1,f2,fh1,fh2,fhfull,nside=256,tmask=None,return_map=False,remove_monopole=True):
     #assume tmask is already degraded, remove_monopole=True: remove from differences before anafast
     #monopole is removed from I,Q U maps after masking
   
-    mm1=hp.read_map(f1,[0,1,2,3],verbose=False)
-    mm2=hp.read_map(f2,[0,1,2,3],verbose=False)
-
+    mm1=hp.read_map(f1,[0,1,2],verbose=False)
+    mm2=hp.read_map(f2,[0,1,2],verbose=False)
+    h1=hp.read_map(fh1,[3],verbose=False)
+    h2=hp.read_map(fh2,[3],verbose=False)
+    hit_full=hp.read_map(fhfull,[3],verbose=False)
+    
+    nsh=hp.npix2nside(len(h1))
+    if nsh != nside:
+        h1=hp.ud_grade(h1,nside_out=nside,power=-2)
+        h2=hp.ud_grade(h2,nside_out=nside,power=-2)
+        hit_full=hp.ud_grade(hit_full,nside_out=nside,power=-2)
+    
     mmm1=[]
     mmm2=[]
-    powers=[None,None,None,-2]
-    for m1,m2,power in zip(mm1,mm2,powers):
-        m1=hp.ud_grade(hp.ma(m1),nside_out=nside,power=power)
-        m2=hp.ud_grade(hp.ma(m2),nside_out=nside,power=power)
+    for m1,m2 in zip(mm1,mm2):
+        m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
+        m2=hp.ud_grade(hp.ma(m2),nside_out=nside)
         tmask=m1.mask | m2.mask | tmask
         mmm1.append(m1)
         mmm2.append(m2)
-    
-    if hit_normalize == True:
-        hit_full=hp.ud_grade(hp.read_map(fullmap,[3],verbose=False),nside_out=nside,power=-2)
-        whit = np.sqrt(hit_full*(1./m1[3]+1./m2[3])) # m1[3] and m2[3] are the hit counts of the two maps to be nulled
-    else:
-        whit = np.double(2)
+    whit = np.sqrt(hit_full*(1./h1+1./h2)) # m1[3] and m2[3] are the hit counts of the two maps to be nulled
     diff=[]
     
     for m1,m2 in zip(mmm1,mmm2):
         d=(m1-m2)/whit
+        d.mask=tmask
+        if remove_monopole:
+            d=hp.remove_monopole(d)
+        diff.append(d)
+    
+    skyfrac=1-float(tmask.sum())/len(tmask)
+    cldata=hp.anafast(diff)
+    cldata_out=[]
+    for cl in cldata:
+        cldata_out.append(cl/skyfrac)
+        
+    if return_map is False:
+        return cldata_out
+    if return_map is True:
+        return cldata_out,diff
+
+def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_monopole=True):
+    #assume tmask is already degraded, remove_monopole=True: remove from differences before anafast
+    #monopole is removed from I,Q U maps after masking
+  
+    mm1=hp.read_map(f1,[0,1,2],verbose=False)
+    mm2=hp.read_map(f2,[0,1,2],verbose=False)
+
+    mmm1=[]
+    mmm2=[]
+    for m1,m2 in zip(mm1,mm2):
+        m1=hp.ud_grade(hp.ma(m1),nside_out=nside)
+        m2=hp.ud_grade(hp.ma(m2),nside_out=nside)
+        tmask=m1.mask | m2.mask | tmask
+        mmm1.append(m1)
+        mmm2.append(m2)
+   diff=[]
+   
+    for m1,m2 in zip(mmm1,mmm2):
+        d=m1-m2
         d.mask=tmask
         if remove_monopole:
             d=hp.remove_monopole(d)
