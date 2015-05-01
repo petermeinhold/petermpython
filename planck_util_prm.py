@@ -314,7 +314,7 @@ def read_and_diff_files_fast(f1,f2,nside=256,tmask=None,return_map=False,remove_
         tmask=m1.mask | m2.mask | tmask
         mmm1.append(m1)
         mmm2.append(m2)
-   diff=[]
+    diff=[]
    
     for m1,m2 in zip(mmm1,mmm2):
         d=m1-m2
