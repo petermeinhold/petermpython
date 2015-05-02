@@ -131,6 +131,7 @@ if __name__ == "__main__":
     nside =256
     topdir='/global/project/projectdirs/planck/data/ffp8/mc_noise/'
     pkldir='/global/homes/p/peterm/ffp8_noise_cls_1000_dx11maskps_hitweight/'
+    dpcmapdir='/global/project/projectdirs/planck/data/mission/DPC_maps/dx11_delta/lfi/'
     tmask=get_lfi_dx11_mask(256,masktype='int',ps=True)
     mcdirlist=np.sort(glob(topdir+freq+'/'+freq+'_0*'))
     homedir='/global/homes/p/peterm/'
