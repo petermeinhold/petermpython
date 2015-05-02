@@ -109,14 +109,14 @@ def read_and_diff_files_fast_hitweight(f1,f2,fh1,fh2,fhfull,nside=256,tmask=None
 
 if __name__ == "__main__":
     #arguments: freq s1,q1,hr1,s2, q2, hr2
-	sd={} ; qd={} ; hd={}
+    sd={} ; qd={} ; hd={}
     for s in range(1,9):
         sd['s'+str(s)]='survey_'+str(s)
-	sd['full']='full'
+    sd['full']='full'
     for y in range(1,5):
         sd['y'+str(y)]='yr'+str(y)
-	sd['']='';qd['']='';hd['']='';sd['y13']='yr1+yr3';sd['y24']='yr2+yr4';qd['_18_23']='-18_23'
-	qd['_19_22']='-19_22';qd['_20_21']='-20_21';hd['_hr1']='_ringhalf_1';hd['_hr2']='_ringhalf_2'
+        sd['']='';qd['']='';hd['']='';sd['y13']='yr1+yr3';sd['y24']='yr2+yr4';qd['_18_23']='-18_23'
+        qd['_19_22']='-19_22';qd['_20_21']='-20_21';hd['_hr1']='_ringhalf_1';hd['_hr2']='_ringhalf_2'
     freq=sys.argv[1]
     qq1=sys.argv[2]
     s1=sys.argv[3]
@@ -144,9 +144,9 @@ if __name__ == "__main__":
         for mcnum in mcnumlist:
             f1=mcdir+'/ffp8_noise_%s%s_%s_map_mc_%s%s.fits' %(freq,q1,s1,mcnum,hr1)
             f2=mcdir+'/ffp8_noise_%s%s_%s_map_mc_%s%s.fits' %(freq,q2,s2,mcnum,hr2)
-	    f1h=dpcmapdir+'LFI_SkyMap_%s_1024_DX11D_%s%s.fits' %(freq,sd[s1],hd[hr1])
-	    f2h=dpcmapdir+'LFI_SkyMap_%s_1024_DX11D_%s%s.fits' %(freq,sd[s2],hd[hr2])
-	    fhfull=dpcmapdir+'LFI_SkyMap_%s_1024_DX11D_%s.fits' %(freq,sd['full'])
+            f1h=dpcmapdir+'LFI_SkyMap_%s_1024_DX11D_%s%s.fits' %(freq,sd[s1],hd[hr1])
+            f2h=dpcmapdir+'LFI_SkyMap_%s_1024_DX11D_%s%s.fits' %(freq,sd[s2],hd[hr2])
+            fhfull=dpcmapdir+'LFI_SkyMap_%s_1024_DX11D_%s.fits' %(freq,sd['full'])
             cls.append(read_and_diff_files_fast_hitweight(f1,f2,f1h,f2h,fhfull,nside=256,tmask=tmask))           
     pklfilename=pkldir+'/ffp8_noise_null_cls_'+freq+q1+s1+hr1+q2+s2+hr2+'.pkl'
     pklfile=open(pklfilename,'wb')
