@@ -436,7 +436,7 @@ def read_and_diff_2_files(f1,f2,f3,nside=None,tmask=None,corr1=None,corr2=None,c
     if return_map is True:
         return cldata_out,mdiffd
 
-def read_and_diff_files(f1,f2,f1h,f2h,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True,remove_monopole=True,hit_normalize=False,fullmap=None):
+def read_and_diff_files(f1,f2,f1h=None,f2h=None,fullmaph=None,nside=None,tmask=None,corr1=None,corr2=None,return_map=False,return_dict=True,remove_monopole=True,hit_normalize=False,fullmap=None):
     '''
     f1 and f2 are filenames of maps to be diffed. f1h and f2h are names of (zonca) files with hitcounts, only use when hit_normalize=True
     '''
@@ -458,9 +458,14 @@ def read_and_diff_files(f1,f2,f1h,f2h,nside=None,tmask=None,corr1=None,corr2=Non
 
     keys=m1.keys()
     if hit_normalize == True:
-        m1h=hp.ud_grade(hp.read_map(f1h,verbose=False),nside_out=nside,power=-2)
-        m2h=hp.ud_grade(hp.read_map(f2h,verbose=False),nside_out=nside,power=-2)
-        hit_full=hp.ud_grade(hp.read_map(fullmap,verbose=False),nside_out=nside,power=-2)
+        if f1h!=None:
+                m1h=hp.ud_grade(hp.read_map(f1h,verbose=False),nside_out=nside,power=-2)
+                m2h=hp.ud_grade(hp.read_map(f2h,verbose=False),nside_out=nside,power=-2)
+                hit_full=hp.ud_grade(hp.read_map(fullmaph,verbose=False),nside_out=nside,power=-2)
+        elif f1h==None:
+                m1h=hp.ud_grade(hp.read_map(f1,[3],verbose=False),nside_out=nside,power=-2)
+                m2h=hp.ud_grade(hp.read_map(f2,[3],verbose=False),nside_out=nside,power=-2)
+                hit_full=hp.ud_grade(hp.read_map(fullmap,[3],verbose=False),nside_out=nside,power=-2)
         whit = np.sqrt(hit_full*(1./m1h+1./m2h)) # m1h and m2h are the hit counts of the two maps to be nulled
     else:
         whit = np.double(2)
