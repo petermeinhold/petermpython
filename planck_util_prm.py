@@ -460,7 +460,7 @@ def read_and_diff_files(f1,f2,f1h,f2h,nside=None,tmask=None,corr1=None,corr2=Non
     if hit_normalize == True:
         m1h=hp.ud_grade(hp.read_map(f1h,verbose=False),nside_out=nside,power=-2)
         m2h=hp.ud_grade(hp.read_map(f2h,verbose=False),nside_out=nside,power=-2)
-        hit_full=hp.ud_grade(hp.read_map(fullmap,verbose=False),nside=nside,power=-2)
+        hit_full=hp.ud_grade(hp.read_map(fullmap,verbose=False),nside_out=nside,power=-2)
         whit = np.sqrt(hit_full*(1./m1h+1./m2h)) # m1h and m2h are the hit counts of the two maps to be nulled
     else:
         whit = np.double(2)
