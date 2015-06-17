@@ -50,21 +50,20 @@ print(diodes)
 
 for diode in diodes:
     for od in range(91,1603):
-	rawfile=adc_corr_data_dir+'od%s_rca%s.fits' % (od,diode)
-	corrfile=spike_corr_data_dir+'od%s_rca%s.fits' % (od,diode)
-	if not(os.path.exists(corrfile)):
-	     if os.path.exists(rawfile):
-		hdulist = fits.open(rawfile)
-		data = hdulist[1].data
-		sky  = data.field('SKY')
-		ref = data.field('REF')
-		obt=data.field('OBT')
-		sky_template,ref_template=get_spike_template(obt,sky,ref)	
-		sub_sky,sub_ref=subtract_spike_template(obt,sky,ref,sky_template,ref_template)
-		data.field('SKY')[:] = sub_sky 
-		data.field('REF')[:] = sub_ref
-		hdulist[1].header.update('hierarch instrument','LFI_spikes_removed')
-		hdulist[1].header.update('hierarch spikes_removed','True')
-		print('1 Hz Spike removal %s -> %s' % (rawfile,corrfile)
-		hdulist.writeto(corrfile)
-	
+        rawfile=adc_corr_data_dir+'od%s_rca%s.fits' % (od,diode)
+        corrfile=spike_corr_data_dir+'od%s_rca%s.fits' % (od,diode)
+        if not(os.path.exists(corrfile)):
+            if os.path.exists(rawfile):
+                hdulist = fits.open(rawfile)
+                data = hdulist[1].data
+                sky  = data.field('SKY')
+                ref = data.field('REF')
+                obt=data.field('OBT')
+                sky_template,ref_template=get_spike_template(obt,sky,ref)	
+                sub_sky,sub_ref=subtract_spike_template(obt,sky,ref,sky_template,ref_template)
+                data.field('SKY')[:] = sub_sky 
+                data.field('REF')[:] = sub_ref
+                hdulist[1].header.update('hierarch instrument','LFI_spikes_removed')
+                hdulist[1].header.update('hierarch spikes_removed','True')
+                print('1 Hz Spike removal %s -> %s' % (rawfile,corrfile)
+                hdulist.writeto(corrfile)
