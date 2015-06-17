@@ -33,12 +33,10 @@ def subtract_spike_template(obt,sky,ref,stemplate,rtemplate):
     obtt=obt/65536.   #convert the OBT to seconds
     obttf,obtti=np.modf(obtt)   #find the fractional part, so we can bin to a consistent phase
     sbins=np.unique(obttf)   #find unique values of the fractional time for this day and chan, will be the template bins
-    subref=ref.copy()
-    subsky=sky.copy()
     #do the subtraction
     for t,sbin in enumerate(sbins):
-        subsky[obttf==sbin] = sky[obttf==sbin]-stemplate[t]
-        subref[obttf==sbin] = ref[obttf==sbin]-rtemplate[t]
+        subsky[obttf==sbin] -= stemplate[t]
+        subref[obttf==sbin] -= rtemplate[t]
     return subsky,subref
     
 horn=sys.argv[1]
@@ -58,12 +56,12 @@ for diode in diodes:
                 data = hdulist[1].data
                 sky  = data.field('SKY')
                 ref = data.field('REF')
-                obt=data.field('OBT')
+                obt=data.field('TIME')
                 sky_template,ref_template=get_spike_template(obt,sky,ref)	
                 sub_sky,sub_ref=subtract_spike_template(obt,sky,ref,sky_template,ref_template)
                 data.field('SKY')[:] = sub_sky 
                 data.field('REF')[:] = sub_ref
                 hdulist[1].header.update('hierarch instrument','LFI_spikes_removed')
                 hdulist[1].header.update('hierarch spikes_removed','True')
-                print('1 Hz Spike removal %s -> %s' % (rawfile,corrfile)
+                print('1 Hz Spike removal %s -> %s' % (rawfile,corrfile))
                 hdulist.writeto(corrfile)
